@@ -3,6 +3,8 @@ Pure python hdc library for harmony hdc service.
 
 **Support querying corresponding hdc commands and documentation via adb command.**
 
+<img width="1135" alt="Screenshot 2025-07-09 at 17 02 36" src="https://github.com/user-attachments/assets/8eac7cf2-8e20-490e-ad47-9c1ec388bdf3" />
+
 ## Requires
 - Python 3.11+
 - [hdc](https://developer.huawei.com/consumer/en/doc/harmonyos-guides/hdc#environment-setup)
