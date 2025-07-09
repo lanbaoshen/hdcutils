@@ -7,6 +7,11 @@ from tempfile import SpooledTemporaryFile
 
 from loguru import logger
 
+from hdcutils import adb_mapping
+
+_REFER_CHAIN = 'HDCClient()'
+_DOC = 'https://developer.huawei.com/consumer/en/doc/harmonyos-guides/hdc#'
+
 
 class HDC:
     def __init__(self, hdc: str | Path = None):
@@ -19,7 +24,20 @@ class HDC:
 
         logger.debug(f'HDC initialized with path: {self._hdc}')
 
+    @adb_mapping(cmd='adb', refer_chain=_REFER_CHAIN, doc=_DOC)
     def cmd(self, cmd: list[str], timeout: float | int = 5 * 60, *, redirect: bool = False) -> tuple[str, str]:
+        """
+        Execute a HDC command.
+
+        Args:
+            cmd: The command to execute, as a list of strings.
+            timeout: The timeout for the command execution in seconds.
+            redirect: If True, redirect stdout and stderr to a temporary file.
+                When cmd return larger than 10KB, it will be written to a file instead of PIPE.
+
+        Returns:
+            stdout, stderr
+        """
         close_fds = False if platform.system() == 'Darwin' else True
 
         if redirect:

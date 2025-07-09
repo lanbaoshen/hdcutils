@@ -2,6 +2,7 @@ from typing import Literal
 
 from loguru import logger
 
+from hdcutils import adb_mapping
 from hdcutils._extension_base import ExtensionBase
 
 TYPE = Literal['app', 'core', 'init', 'kmsg', 'only_prerelease']
@@ -9,7 +10,12 @@ TYPE = Literal['app', 'core', 'init', 'kmsg', 'only_prerelease']
 LEVEL = Literal['DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL', 'X']
 
 
+_REFER_CHAIN = 'HDCClient().device().hilog'
+_DOC = 'https://developer.huawei.com/consumer/en/doc/harmonyos-guides/hilog#'
+
+
 class HiLog(ExtensionBase):
+    @adb_mapping(cmd='adb logcat', refer_chain=_REFER_CHAIN, doc=_DOC)
     def cmd(self, cmd: list[str], timeout: int = 5) -> tuple[str, str]:
         return self._device.shell(['hilog'] + cmd, timeout)
 
@@ -26,6 +32,7 @@ class HiLog(ExtensionBase):
         """
         return domain if domain.startswith('0xD0') else f'0xD0{domain}'
 
+    @adb_mapping(cmd='adb logcat -c', refer_chain=_REFER_CHAIN, doc=f'{_DOC}clearing-the-log-buffer')
     def remove_buffer_log(self, types: list['TYPE'] = None) -> tuple[str, str]:
         """Remove log in buffer
 
@@ -38,6 +45,7 @@ class HiLog(ExtensionBase):
         types = types or ['app', 'core', 'only_prerelease']
         return self.cmd(['-r', '-t', ','.join(types)])
 
+    @adb_mapping(cmd='adb logcat -g', refer_chain=_REFER_CHAIN, doc=f'{_DOC}displaying-the-log-buffer-size')
     def query_buffer_size(self, types: list['TYPE'] = None) -> tuple[str, str]:
         """Query buffer size
 
@@ -50,6 +58,7 @@ class HiLog(ExtensionBase):
         types = types or ['app', 'core', 'only_prerelease']
         return self.cmd(['-g', '-t', ','.join(types)])
 
+    @adb_mapping(cmd='adb logcat -G', refer_chain=_REFER_CHAIN, doc=f'{_DOC}setting-the-log-buffer-size')
     def set_buffer_size(
         self, *, types: list['TYPE'] = None, size: float | int, unit: Literal['B', 'K', 'M', 'G']
     ) -> tuple[str, str]:
@@ -68,6 +77,7 @@ class HiLog(ExtensionBase):
         types = types or ['app', 'core', 'only_prerelease']
         return self.cmd(['-G', f'{size}{unit}', '-t', ','.join(types)])
 
+    @adb_mapping(cmd='adb logcat -G', refer_chain=_REFER_CHAIN, doc=f'{_DOC}displaying-and-setting-log-levels')
     def set_log_level(self, log_level: 'LEVEL', *, domain: str = None, tag: str = None) -> tuple[str, str]:
         """Set global loggable level
 
@@ -89,6 +99,7 @@ class HiLog(ExtensionBase):
             cmd.extend(['-T', tag])
         return self.cmd(cmd)
 
+    @adb_mapping(cmd='adb logcat ', refer_chain=_REFER_CHAIN, doc=f'{_DOC}displaying-logs-of-a-specified-level')
     def non_block_read(
         self,
         *,
