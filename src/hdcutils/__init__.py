@@ -3,7 +3,6 @@ from hdcutils._device import HDCDevice
 from hdcutils._hdc import HDC
 
 __all__ = [
-    'HDCDevice',
     'HDCClient',
     'adb_mapping',
 ]
