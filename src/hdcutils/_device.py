@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from hdcutils import adb_mapping
-from hdcutils.extension import BundleManager, HiLog, UITest
+from hdcutils.extension import AbilityAssistant, BundleManager, HiLog, UITest
 
 if TYPE_CHECKING:
     from hdcutils._hdc import HDC
@@ -16,9 +16,11 @@ class HDCDevice:
     def __init__(self, *, connect_key: str | None = None, hdc: 'HDC'):
         self._connect_key = connect_key
         self._hdc = hdc
+
         self._hilog = HiLog(self)
         self._uitest = UITest(self)
         self._bm = BundleManager(self)
+        self._aa = AbilityAssistant(self)
 
     @property
     def connect_key(self) -> str:
@@ -35,6 +37,10 @@ class HDCDevice:
     @property
     def bm(self) -> 'BundleManager':
         return self._bm
+
+    @property
+    def aa(self) -> 'AbilityAssistant':
+        return self._aa
 
     @adb_mapping(cmd='adb -s', refer_chain=_REFER_CHAIN, doc=_DOC)
     def cmd(self, cmd: list[str], timeout: int = 5) -> tuple[str, str]:
