@@ -3,7 +3,7 @@ from typing import Literal
 from loguru import logger
 
 from hdcutils import adb_mapping
-from hdcutils._extension_base import ExtensionBase
+from hdcutils.extension._base import ExtensionBase
 
 TYPE = Literal['app', 'core', 'init', 'kmsg', 'only_prerelease']
 # X means that loggable level is higher than the max level, no log could be printed.

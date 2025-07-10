@@ -2,9 +2,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from hdcutils import adb_mapping
-from hdcutils._bundle_manager import BundleManager
-from hdcutils._hilog import HiLog
-from hdcutils._uitest import UITest
+from hdcutils.extension import BundleManager, HiLog, UITest
 
 if TYPE_CHECKING:
     from hdcutils._hdc import HDC
