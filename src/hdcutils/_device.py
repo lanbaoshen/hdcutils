@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from hdcutils import adb_mapping
+from hdcutils._bundle_manager import BundleManager
 from hdcutils._hilog import HiLog
 from hdcutils._uitest import UITest
 
@@ -19,6 +20,7 @@ class HDCDevice:
         self._hdc = hdc
         self._hilog = HiLog(self)
         self._uitest = UITest(self)
+        self._bm = BundleManager(self)
 
     @property
     def connect_key(self) -> str:
@@ -31,6 +33,10 @@ class HDCDevice:
     @property
     def uitest(self) -> 'UITest':
         return self._uitest
+
+    @property
+    def bm(self) -> 'BundleManager':
+        return self._bm
 
     @adb_mapping(cmd='adb -s', refer_chain=_REFER_CHAIN, doc=_DOC)
     def cmd(self, cmd: list[str], timeout: int = 5) -> tuple[str, str]:
@@ -80,7 +86,7 @@ class HDCDevice:
         if shared:
             cmd.append('-s')
         cmd.append(path)
-        return self.cmd(cmd)
+        return self.cmd(cmd, timeout=10)
 
     @adb_mapping(cmd='adb uninstall', refer_chain=_REFER_CHAIN, doc=f'{_DOC}commands')
     def uninstall(self, package: str, *, keep: bool = False, shared: bool = False) -> tuple[str, str]:
@@ -100,4 +106,4 @@ class HDCDevice:
         if shared:
             cmd.append('-s')
         cmd.append(package)
-        return self.cmd(cmd)
+        return self.cmd(cmd, timeout=10)
