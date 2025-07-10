@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 from hdcutils import adb_mapping
 from hdcutils._hilog import HiLog
+from hdcutils._uitest import UITest
 
 if TYPE_CHECKING:
     from hdcutils._hdc import HDC
@@ -16,6 +17,7 @@ class HDCDevice:
         self._connect_key = connect_key
         self._hdc = hdc
         self._hilog = HiLog(self)
+        self._uitest = UITest(self)
 
     @property
     def connect_key(self) -> str:
@@ -24,6 +26,10 @@ class HDCDevice:
     @property
     def hilog(self) -> 'HiLog':
         return self._hilog
+
+    @property
+    def uitest(self) -> 'UITest':
+        return self._uitest
 
     @adb_mapping(cmd='adb -s', refer_chain=_REFER_CHAIN, doc=_DOC)
     def cmd(self, cmd: list[str], timeout: int = 5) -> tuple[str, str]:
