@@ -77,7 +77,7 @@ class HiLog(ExtensionBase):
         types = types or ['app', 'core', 'only_prerelease']
         return self.cmd(['-G', f'{size}{unit}', '-t', ','.join(types)])
 
-    @adb_mapping(cmd='adb logcat -G', refer_chain=_REFER_CHAIN, doc=f'{_DOC}displaying-and-setting-log-levels')
+    @adb_mapping(cmd='adb shell setprop log', refer_chain=_REFER_CHAIN, doc=f'{_DOC}displaying-and-setting-log-levels')
     def set_log_level(self, log_level: 'LEVEL', *, domain: str = None, tag: str = None) -> tuple[str, str]:
         """Set global loggable level
 
@@ -99,7 +99,7 @@ class HiLog(ExtensionBase):
             cmd.extend(['-T', tag])
         return self.cmd(cmd)
 
-    @adb_mapping(cmd='adb logcat ', refer_chain=_REFER_CHAIN, doc=f'{_DOC}displaying-logs-of-a-specified-level')
+    @adb_mapping(cmd='adb logcat', refer_chain=_REFER_CHAIN, doc=f'{_DOC}displaying-logs-of-a-specified-level')
     def non_block_read(
         self,
         *,
