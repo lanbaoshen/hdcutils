@@ -1,7 +1,7 @@
 from typing import Literal
 
 from hdcutils import adb_mapping
-from hdcutils._extension_base import ExtensionBase
+from hdcutils.extension._base import ExtensionBase
 
 _REFER_CHAIN = 'HDCClient().device().uitest'
 _DOC = 'https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkxtest-guidelines#'
