@@ -58,7 +58,7 @@ exclude = [
 lint.select = ["E", "F", "B", "W", "I", "N", "UP", "ANN", "S", "BLE", "FBT", "C4", "DTZ", "T10", "EM", "ISC", "ICN"]
 lint.ignore = [
     "ANN401", "EM101", "N815", "N818", "EM102", "B904", "ANN001", "ANN204", "ANN202", "S603", "S607",
-    "UP040"
+    "UP040", "E741"
 ]
 lint.fixable = ["ALL"]
 lint.unfixable = []

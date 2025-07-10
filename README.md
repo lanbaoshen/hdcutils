@@ -9,6 +9,25 @@ Pure python hdc library for harmony hdc service.
 - Python 3.11+
 - [hdc](https://developer.huawei.com/consumer/en/doc/harmonyos-guides/hdc#environment-setup)
 
+<details>
+<summary>Install hdc without DevEco Studio</summary>
+
+1. Find `command-line-tools` in [Download Center](https://developer.huawei.com/consumer/en/download/), and choose a release version to download.
+If the path is zh, you need to log in to your Huawei account first.
+2. Unzip the downloaded file to a directory, e.g `~/Library/Harmony/command-line-tools`
+3. Set environment variable like:
+```shell
+export HARMONY_HOME=~/Library/Harmony
+export PATH=${HARMONY_HOME}/command-line-tools/bin:${HARMONY_HOME}/command-line-tools/sdk/default/openharmony/toolchains:${PATH}
+```
+4. Run `hdc` command to check if it works:
+```shell
+hdc checkserver
+# Client version:Ver: 3.1.0e, server version:Ver: 3.1.0e
+```
+
+</details>
+
 ## Install
 
 ```shell
