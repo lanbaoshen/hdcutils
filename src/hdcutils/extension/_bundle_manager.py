@@ -43,3 +43,36 @@ class BundleManager(ExtensionBase):
         if shortcut:
             cmd.append('-s')
         return self.cmd(cmd)
+
+    @adb_mapping(cmd='adb shell pm clear', refer_chain=_REFER_CHAIN, doc=f'{_DOC}clean')
+    def clean_cache(self, bundle: str) -> tuple[str, str]:
+        """Clean the cache of a bundle.
+
+        Args:
+            bundle: The name of the bundle to clean.
+
+        Returns:
+            stdout, stderr
+        """
+        return self.cmd(['clean', '-c', '-n', bundle])
+
+    @adb_mapping(cmd='adb shell pm clear', refer_chain=_REFER_CHAIN, doc=f'{_DOC}clean')
+    def clean_data(self, bundle: str) -> tuple[str, str]:
+        """Clean the data of a bundle.
+
+        Args:
+            bundle: The name of the bundle to clean.
+
+        Returns:
+            stdout, stderr
+        """
+        return self.cmd(['clean', '-d', '-n', bundle])
+
+    @adb_mapping(cmd='todo', refer_chain=_REFER_CHAIN, doc=f'{_DOC}clean')
+    def get_udid(self) -> tuple[str, str]:
+        """Obtains the UDID of a device
+
+        Returns:
+            stdout, stderr
+        """
+        return self.cmd(['get', '-u'])
