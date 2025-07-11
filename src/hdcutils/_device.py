@@ -2,7 +2,7 @@ from pathlib import Path, PurePath
 from typing import TYPE_CHECKING
 
 from hdcutils import adb_mapping
-from hdcutils.extension import AbilityAssistant, BundleManager, HiLog, UITest
+from hdcutils.extension import AbilityAssistant, BundleManager, HiLog, Param, UITest
 
 if TYPE_CHECKING:
     from hdcutils._hdc import HDC
@@ -21,6 +21,7 @@ class HDCDevice:
         self._uitest = UITest(self)
         self._bm = BundleManager(self)
         self._aa = AbilityAssistant(self)
+        self._param = Param(self)
 
     @property
     def connect_key(self) -> str:
@@ -41,6 +42,10 @@ class HDCDevice:
     @property
     def aa(self) -> 'AbilityAssistant':
         return self._aa
+
+    @property
+    def param(self) -> 'Param':
+        return self._param
 
     @adb_mapping(cmd='adb -s', refer_chain=_REFER_CHAIN, doc=_DOC)
     def cmd(self, cmd: list[str], timeout: int = 5) -> tuple[str, str]:
