@@ -1,8 +1,8 @@
-from pathlib import Path
+from pathlib import Path, PurePath
 from typing import TYPE_CHECKING
 
 from hdcutils import adb_mapping
-from hdcutils.extension import AbilityAssistant, BundleManager, HiLog, UITest
+from hdcutils.extension import AbilityAssistant, BundleManager, HiLog, Param, UITest
 
 if TYPE_CHECKING:
     from hdcutils._hdc import HDC
@@ -21,6 +21,7 @@ class HDCDevice:
         self._uitest = UITest(self)
         self._bm = BundleManager(self)
         self._aa = AbilityAssistant(self)
+        self._param = Param(self)
 
     @property
     def connect_key(self) -> str:
@@ -41,6 +42,10 @@ class HDCDevice:
     @property
     def aa(self) -> 'AbilityAssistant':
         return self._aa
+
+    @property
+    def param(self) -> 'Param':
+        return self._param
 
     @adb_mapping(cmd='adb -s', refer_chain=_REFER_CHAIN, doc=_DOC)
     def cmd(self, cmd: list[str], timeout: int = 5) -> tuple[str, str]:
@@ -111,3 +116,42 @@ class HDCDevice:
             cmd.append('-s')
         cmd.append(package)
         return self.cmd(cmd, timeout=10)
+
+    @adb_mapping(cmd='adb push', refer_chain=_REFER_CHAIN, doc=f'{_DOC}commands')
+    def file_send(self, *, local: str | Path, remote: str | PurePath, timeout: int = 60) -> tuple[str, str]:
+        """Send file to device
+
+        Args:
+            local: Local path.
+            remote: Remote path.
+            timeout: Timeout for the operation in seconds.
+
+        Returns:
+            stdout, stderr
+        """
+        return self.cmd(['file', 'send', str(local), str(remote)], timeout=timeout)
+
+    @adb_mapping(cmd='adb pull', refer_chain=_REFER_CHAIN, doc=f'{_DOC}commands')
+    def file_recv(
+        self, *, remote: str | PurePath, local: str | Path, hold_timestamp: bool = False, timeout: int = 60
+    ) -> tuple[str, str]:
+        """Receive file from device
+
+        Args:
+            remote: Remote path.
+            local: Local path.
+            hold_timestamp: hold target file timestamp
+            timeout: Timeout for the operation in seconds.
+
+        Returns:
+            stdout, stderr
+        """
+        cmd = ['file', 'recv']
+        if hold_timestamp:
+            cmd.append('-a')
+        cmd = cmd + [str(remote), str(local)]
+        return self.cmd(cmd, timeout=timeout)
+
+    @adb_mapping(cmd='adb wait-for-device', refer_chain=_REFER_CHAIN, doc=f'{_DOC}commands')
+    def wait(self, timeout: int = 60) -> tuple[str, str]:
+        return self.cmd(['wait'], timeout=timeout)
