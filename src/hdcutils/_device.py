@@ -155,3 +155,13 @@ class HDCDevice:
     @adb_mapping(cmd='adb wait-for-device', refer_chain=_REFER_CHAIN, doc=f'{_DOC}commands')
     def wait(self, timeout: int = 60) -> tuple[str, str]:
         return self.cmd(['wait'], timeout=timeout)
+
+    @adb_mapping(cmd='adb reboot', refer_chain=_REFER_CHAIN, doc=f'{_DOC}commands')
+    def boot(self) -> tuple[str, str]:
+        """
+        Reboot the device.
+
+        Returns:
+            stdout, stderr
+        """
+        return self.cmd(['target', 'boot'])
