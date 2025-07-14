@@ -2,7 +2,7 @@ from pathlib import Path, PurePath
 from typing import TYPE_CHECKING
 
 from hdcutils import adb_mapping
-from hdcutils.extension import AbilityAssistant, BundleManager, HiLog, Param, UITest
+from hdcutils.extension import AbilityAssistant, BundleManager, HiLog, Param, PowerShell, UITest
 
 if TYPE_CHECKING:
     from hdcutils._hdc import HDC
@@ -46,6 +46,10 @@ class HDCDevice:
     @property
     def param(self) -> 'Param':
         return self._param
+
+    @property
+    def power_shell(self) -> 'PowerShell':
+        return PowerShell(self)
 
     @adb_mapping(cmd='adb -s', refer_chain=_REFER_CHAIN, doc=_DOC)
     def cmd(self, cmd: list[str], timeout: int = 5) -> tuple[str, str]:
