@@ -177,7 +177,7 @@ class HDCDevice:
         return self.cmd(['target', 'boot'])
 
     @adb_mapping(cmd='adb shell screencap', refer_chain=_REFER_CHAIN, doc=f'{_DOC}commands')
-    def snapshot_display(self, *, display_id: int = 0, path: str | PurePath = None) -> tuple[str, str]:
+    def snapshot_display(self, *, display_id: int = 0, path: PurePath = None) -> tuple[str, str]:
         """Take a snapshot of the specified display and save it to the given device path.
 
         Only support jpeg
