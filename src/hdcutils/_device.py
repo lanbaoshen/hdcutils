@@ -104,7 +104,7 @@ class HDCDevice:
             cmd.append('-r')
         if shared:
             cmd.append('-s')
-        cmd.append(path)
+        cmd.append(str(path))
         return self.cmd(cmd, timeout=10)
 
     @adb_mapping(cmd='adb uninstall', refer_chain=_REFER_CHAIN, doc=f'{_DOC}commands')
@@ -175,3 +175,23 @@ class HDCDevice:
             stdout, stderr
         """
         return self.cmd(['target', 'boot'])
+
+    @adb_mapping(cmd='adb shell screencap', refer_chain=_REFER_CHAIN, doc=f'{_DOC}commands')
+    def snapshot_display(self, *, display_id: int = 0, path: str | PurePath = None) -> tuple[str, str]:
+        """Take a snapshot of the specified display and save it to the given device path.
+
+        Only support jpeg
+
+        Args:
+            display_id: The ID of the display to snapshot. Default is 0.
+            path: The path on the device where the snapshot will be saved.
+                If None, it will save to /data/local/tmp/
+
+        Returns:
+            stdout, stderr
+        """
+        cmd = ['snapshot_display', '-i', str(display_id)]
+        if path:
+            cmd.extend(['-f', str(path.with_suffix('.jpeg'))])
+
+        return self.shell(cmd)
