@@ -2,7 +2,7 @@ from pathlib import Path, PurePath
 from typing import TYPE_CHECKING
 
 from hdcutils import adb_mapping
-from hdcutils.extension import AbilityAssistant, BundleManager, HiLog, Param, UITest
+from hdcutils.extension import AbilityAssistant, BundleManager, HiDumper, HiLog, Param, PowerShell, UITest
 
 if TYPE_CHECKING:
     from hdcutils._hdc import HDC
@@ -22,6 +22,8 @@ class HDCDevice:
         self._bm = BundleManager(self)
         self._aa = AbilityAssistant(self)
         self._param = Param(self)
+        self._power_shell = PowerShell(self)
+        self._hidumper = HiDumper(self)
 
     @property
     def connect_key(self) -> str:
@@ -46,6 +48,14 @@ class HDCDevice:
     @property
     def param(self) -> 'Param':
         return self._param
+
+    @property
+    def power_shell(self) -> 'PowerShell':
+        return self._power_shell
+
+    @property
+    def hidumper(self) -> 'HiDumper':
+        return self._hidumper
 
     @adb_mapping(cmd='adb -s', refer_chain=_REFER_CHAIN, doc=_DOC)
     def cmd(self, cmd: list[str], timeout: int = 5) -> tuple[str, str]:
@@ -94,7 +104,7 @@ class HDCDevice:
             cmd.append('-r')
         if shared:
             cmd.append('-s')
-        cmd.append(path)
+        cmd.append(str(path))
         return self.cmd(cmd, timeout=10)
 
     @adb_mapping(cmd='adb uninstall', refer_chain=_REFER_CHAIN, doc=f'{_DOC}commands')
@@ -155,3 +165,33 @@ class HDCDevice:
     @adb_mapping(cmd='adb wait-for-device', refer_chain=_REFER_CHAIN, doc=f'{_DOC}commands')
     def wait(self, timeout: int = 60) -> tuple[str, str]:
         return self.cmd(['wait'], timeout=timeout)
+
+    @adb_mapping(cmd='adb reboot', refer_chain=_REFER_CHAIN, doc=f'{_DOC}commands')
+    def boot(self) -> tuple[str, str]:
+        """
+        Reboot the device.
+
+        Returns:
+            stdout, stderr
+        """
+        return self.cmd(['target', 'boot'])
+
+    @adb_mapping(cmd='adb shell screencap', refer_chain=_REFER_CHAIN, doc=f'{_DOC}commands')
+    def snapshot_display(self, *, display_id: int = 0, path: PurePath = None) -> tuple[str, str]:
+        """Take a snapshot of the specified display and save it to the given device path.
+
+        Only support jpeg
+
+        Args:
+            display_id: The ID of the display to snapshot. Default is 0.
+            path: The path on the device where the snapshot will be saved.
+                If None, it will save to /data/local/tmp/
+
+        Returns:
+            stdout, stderr
+        """
+        cmd = ['snapshot_display', '-i', str(display_id)]
+        if path:
+            cmd.extend(['-f', str(path.with_suffix('.jpeg'))])
+
+        return self.shell(cmd)

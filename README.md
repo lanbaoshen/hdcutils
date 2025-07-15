@@ -69,5 +69,15 @@ out, err = d.shell(['echo', 'Hello World!'])
 print(out)
 ```
 
+### Restart and wait for the reboot to complete
+```python
+from hdcutils import HDCClient
+
+d = HDCClient().device()
+d.boot()
+d.wait()
+d.param.wait('bootevent.boot.completed', 'true')
+```
+
 ## License
 Licensed under MIT - see [LICENSE](LICENSE) file. This is not an official Harmony product.

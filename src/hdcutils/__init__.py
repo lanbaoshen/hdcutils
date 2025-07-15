@@ -30,5 +30,46 @@ class HDCClient(HDC):
         out, _ = self.cmd(cmd, timeout=5)
         return out.splitlines()
 
+    @adb_mapping(cmd='adb start-server', refer_chain=_REFER_CHAIN, doc=_DOC)
+    def start(self, *, restart: bool = False) -> tuple[str, str]:
+        """
+        Start the HDC Server.
+
+        Args:
+            restart: If True, restarts the HDC server if it is already running.
+
+        Returns:
+            stdout, stderr
+        """
+        cmd = ['start']
+        if restart:
+            cmd.append('-r')
+        return self.cmd(cmd, timeout=10)
+
+    @adb_mapping(cmd='adb kill-server', refer_chain=_REFER_CHAIN, doc=_DOC)
+    def kill(self, *, restart: bool = False) -> tuple[str, str]:
+        """
+        Kill the HDC Server.
+
+        Args:
+            restart: If True, restarts the HDC server after killing it.
+
+        Returns:
+            stdout, stderr
+        """
+        cmd = ['kill']
+        if restart:
+            cmd.append('-r')
+        return self.cmd(cmd, timeout=10)
+
     def device(self, connect_key: str = None) -> HDCDevice:
+        """
+        Create a device object for the specified connect key.
+
+        Args:
+            connect_key: The connect key of the device to connect to.
+
+        Returns:
+            HDCDevice: An instance of HDCDevice connected to the specified device.
+        """
         return HDCDevice(connect_key=connect_key, hdc=self)

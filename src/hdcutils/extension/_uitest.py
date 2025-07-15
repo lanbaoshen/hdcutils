@@ -1,10 +1,11 @@
+from pathlib import PurePath
 from typing import Literal
 
 from hdcutils import adb_mapping
 from hdcutils.extension._base import ExtensionBase
 
 _REFER_CHAIN = 'HDCClient().device().uitest'
-_DOC = 'https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkxtest-guidelines#'
+_DOC = 'https://developer.huawei.com/consumer/en/doc/harmonyos-guides/arkxtest-guidelines#'
 
 
 class _KeyEvent:
@@ -547,3 +548,42 @@ class UITest(ExtensionBase):
                 raise ValueError(f'Invalid direction: {direction}. Supported directions are: left, right, up, down.')
 
         return self.cmd(['uiInput', 'dircFling', direction, str(velocity)])
+
+    @adb_mapping(cmd='adb shell screencap', refer_chain=_REFER_CHAIN, doc=f'{_DOC}example-of-capturing-screenshots')
+    def screencap(self, *, display_id: int = 0, path: PurePath = None) -> tuple[str, str]:
+        """
+        Capture a screenshot of the current screen.
+
+        Args:
+            display_id: The ID of the display to snapshot. Default is 0.
+            path: Optional path to save the screenshot.
+                If None, it will save to /data/local/tmp/
+
+        Returns:
+            stdout, stderr
+        """
+        cmd = ['screenCap', '-d', str(display_id)]
+        if path:
+            cmd.extend(['-p', str(path.with_suffix('.png'))])
+
+        return self.cmd(cmd)
+
+    @adb_mapping(
+        cmd='adb shell uiautomator dump', refer_chain=_REFER_CHAIN, doc=f'{_DOC}example-of-obtaining-the-component-tree'
+    )
+    def dump_layout(self, path: PurePath = None) -> tuple[str, str]:
+        """
+        Dump the current UI layout to a file.
+
+        Args:
+            path: Optional path to save the layout dump.
+                If None, it will save to /data/local/tmp/
+
+        Returns:
+            stdout, stderr
+        """
+        cmd = ['dumpLayout']
+        if path:
+            cmd.extend(['-p', str(path.with_suffix('.json'))])
+
+        return self.cmd(cmd)

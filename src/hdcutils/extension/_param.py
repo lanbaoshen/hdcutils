@@ -27,6 +27,14 @@ class Param(ExtensionBase):
 
         Returns:
             stdout, stderr
+
+        Examples:
+            # Get product name
+            d.param.get('const.product.name')
+            # Get software version
+            d.param.get('const.product.software.version')
+            # Get CPU frame
+            d.param.get('const.product.cpu.abilist')
         """
         cmd = ['get']
         if name:
@@ -58,7 +66,7 @@ class Param(ExtensionBase):
         Returns:
             stdout, stderr
         """
-        return self.cmd(['wait', name, value, str(timeout)])
+        return self.cmd(['wait', name, value, str(timeout)], timeout=timeout + 1)
 
     @adb_mapping(cmd='todo', refer_chain=_REFER_CHAIN, doc=f'{_DOC}save')
     def save(self) -> tuple[str, str]:
